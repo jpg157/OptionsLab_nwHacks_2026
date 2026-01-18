@@ -58,6 +58,23 @@ export async function saveStrategy(name: string, legs: OptionLeg[], stockSymbol:
   // return strategy;
 }
 
+export async function createPriceAlert(stockSymbol: string, targetPrice: number): Promise<void> {
+  const response = await apiClient.post(
+    "/alerts",
+    {
+      stockSymbol: stockSymbol.toUpperCase(),
+      targetPrice: targetPrice,
+    },
+    { headers: { "Content-Type": "application/json" } }
+  );
+
+  if (!resOk(response.status)) {
+    throw new Error("Unable to create price alert");
+  }
+  const alert = response.data;
+  return alert
+}
+
 export async function loadStrategies(): Promise<SavedStrategy[]> {
   // TODO: Replace with your Flask API call
   // const response = await fetch(`${API_BASE_URL}/strategies`);

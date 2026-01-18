@@ -3,11 +3,12 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import { useEffect } from "react";
-import { socket } from "./socket.js";
+import { socket } from './socket';
 
 function App() {
   const [count, setCount] = useState(0)
 
+  //TODO: move this to a dedicated socket hook for handling socket connections
   useEffect(() => {
     socket.connect();
 

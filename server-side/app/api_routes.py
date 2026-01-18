@@ -106,7 +106,7 @@ def saveStrategy():
 
     # print(in_memory_strategy_db)
 
-    return strategy
+    return strategy, 201
 
 @app.route("/api/strategies", methods=["GET"])
 @login_required
@@ -160,10 +160,8 @@ def deleteStrategies(strategy_id: int):
     db.session.delete(deleted_strategy)
     db.session.flush()
     db.session.commit()
-
-    print(in_memory_strategy_db)
-
-    return jsonify(in_memory_strategy_db)
+    
+    return '', 204
 
 @app.route("/api/alerts", methods=["POST"])
 @login_required

@@ -36,7 +36,7 @@ def googleCallback():
 
   # create response function obj equal to redirect fn - redirect the user to the client side root page for now
   #todo: allow for different redirect routes
-  return redirect("http://localhost:8080")
+  return redirect("http://localhost:8080/options")
 
 
 @app.route("/api/logout", methods=["POST"])

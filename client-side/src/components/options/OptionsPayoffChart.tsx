@@ -14,12 +14,17 @@ import type { PayoffPoint, StrategyAnalysis } from '@/lib/options';
 interface OptionsPayoffChartProps {
   analysis: StrategyAnalysis;
   strategyName?: string;
-  strategyIntroduction?:string;
-  currentPrice?: number; // Add the '?' here
-  currentSymbol?: string; // Usually good to make this optional too
+  strategyIntroduction?: string;
+  currentPrice?: number;
+  currentSymbol?: string;
 }
 
-export function OptionsPayoffChart({ analysis, strategyName, strategyIntroduction,currentPrice, currentSymbol }: OptionsPayoffChartProps){
+export function OptionsPayoffChart({ 
+  analysis, 
+  strategyName, 
+  currentPrice, 
+  currentSymbol 
+}: OptionsPayoffChartProps) {
   const { payoffData, breakevens } = analysis;
 
   const chartData = useMemo(() => {
@@ -29,6 +34,40 @@ export function OptionsPayoffChart({ analysis, strategyName, strategyIntroductio
       loss: point.payoff < 0 ? point.payoff : 0,
     }));
   }, [payoffData]);
+
+  // NEW: Calculate the P/L at the current price by finding the closest data point
+  const currentPriceMetrics = useMemo(() => {
+    if (!currentPrice || !payoffData.length) return null;
+    
+    // Find closest point in data to the current price
+    const closestPoint = payoffData.reduce((prev, curr) => 
+      Math.abs(curr.price - currentPrice) < Math.abs(prev.price - currentPrice) ? curr : prev
+    );
+
+    return {
+      payoff: closestPoint.payoff,
+      label: closestPoint.payoff >= 0 ? `+$${closestPoint.payoff.toFixed(2)}` : `-$${Math.abs(closestPoint.payoff).toFixed(2)}`
+    };
+  }, [currentPrice, payoffData]);
+
+  // NEW: Calculate domain to ensure Current Price is always visible
+  const xDomain = useMemo(() => {
+    if (payoffData.length === 0) return ['auto', 'auto'];
+    
+    const dataMin = Math.min(...payoffData.map(p => p.price));
+    const dataMax = Math.max(...payoffData.map(p => p.price));
+    
+    // If we have a current price, ensure it's included in the view with some padding
+    let min = dataMin;
+    let max = dataMax;
+    
+    if (currentPrice) {
+      min = Math.min(min, currentPrice * 0.95);
+      max = Math.max(max, currentPrice * 1.05);
+    }
+
+    return [Math.floor(min), Math.ceil(max)];
+  }, [payoffData, currentPrice]);
 
   if (payoffData.length === 0) {
     return (
@@ -48,7 +87,10 @@ export function OptionsPayoffChart({ analysis, strategyName, strategyIntroductio
         {strategyName ? `${strategyName} Payoff` : 'Payoff Diagram'}
       </h3>
       <ResponsiveContainer width="100%" height={350}>
-        <AreaChart data={chartData} margin={{ top: 20, right: 30, left: 20, bottom: 20 }}>
+        <AreaChart 
+          data={chartData} 
+          margin={{ top: 20, right: 30, left: 20, bottom: 20 }}
+        >
           <defs>
             <linearGradient id="profitGradient" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stopColor="hsl(var(--chart-2))" stopOpacity={0.6} />
@@ -60,6 +102,7 @@ export function OptionsPayoffChart({ analysis, strategyName, strategyIntroductio
             </linearGradient>
           </defs>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+          
           <XAxis
             dataKey="price"
             stroke="hsl(var(--muted-foreground))"
@@ -67,7 +110,11 @@ export function OptionsPayoffChart({ analysis, strategyName, strategyIntroductio
             tickLine={false}
             axisLine={false}
             tickFormatter={(value) => `$${value}`}
+            type="number" 
+            domain={xDomain} // NEW: Apply the dynamic domain
+            allowDataOverflow={false}
           />
+          
           <YAxis
             stroke="hsl(var(--muted-foreground))"
             fontSize={12}
@@ -76,6 +123,7 @@ export function OptionsPayoffChart({ analysis, strategyName, strategyIntroductio
             tickFormatter={(value) => `$${value}`}
             domain={[minPayoff - padding, maxPayoff + padding]}
           />
+          
           <Tooltip
             content={({ active, payload }) => {
               if (active && payload && payload.length) {
@@ -95,20 +143,18 @@ export function OptionsPayoffChart({ analysis, strategyName, strategyIntroductio
             }}
           />
           
-          {/* Zero line */}
           <ReferenceLine y={0} stroke="hsl(var(--foreground))" strokeWidth={1.5} />
           
-          <ReferenceLine y={0} stroke="hsl(var(--foreground))" strokeWidth={1.5} />
-          
-          {/* Current stock price line */}
-          {currentPrice && currentPrice > 0 && (
+          {/* Current Stock Price Line */}
+          {currentPrice && currentPrice > 0 && currentPriceMetrics && (
             <ReferenceLine
               x={currentPrice}
               stroke="hsl(var(--chart-1))"
               strokeWidth={2}
               strokeDasharray="3 3"
               label={{
-                value: `${currentSymbol || 'Price'}: $${currentPrice.toFixed(2)}`,
+                // NEW: Updated label to show Price AND Profit/Loss
+                value: `${currentSymbol || 'Price'}: $${currentPrice.toFixed(2)} (${currentPriceMetrics.label})`,
                 position: 'top',
                 fill: 'hsl(var(--chart-1))',
                 fontSize: 12,
@@ -117,7 +163,6 @@ export function OptionsPayoffChart({ analysis, strategyName, strategyIntroductio
             />
           )}
           
-          {/* Breakeven lines */}
           {breakevens.map((be, index) => (
             <ReferenceLine
               key={index}
@@ -133,7 +178,6 @@ export function OptionsPayoffChart({ analysis, strategyName, strategyIntroductio
             />
           ))}
           
-          {/* Profit area */}
           <Area
             type="monotone"
             dataKey="profit"
@@ -142,7 +186,6 @@ export function OptionsPayoffChart({ analysis, strategyName, strategyIntroductio
             fill="url(#profitGradient)"
           />
           
-          {/* Loss area */}
           <Area
             type="monotone"
             dataKey="loss"

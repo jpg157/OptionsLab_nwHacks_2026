@@ -8,6 +8,10 @@ from flask_socketio import SocketIO
 app = Flask(__name__)
 app.config.from_object(Config)
 
+class Base(DeclarativeBase): pass
+db = SQLAlchemy(model_class=Base, app=app)
+migrate = Migrate(app, db)
+
 socketio = SocketIO(app=app,
  logger=True,
  engineio_logger=True,

@@ -1,13 +1,19 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
-// import Header from "./components/Header"; // 如果有
+import Login from "./pages/Login";
+import Tutorial from "./pages/Tutorial";
+
+import "./App.css"
+import "./index.css"
 
 export default function App() {
   return (
     <BrowserRouter>
-      {/* <Header /> */}
+
       <Routes>
         <Route path="/" element={<Index />} />
+        <Route path="/login" element = {<Login/>}/>
+        <Route path="/tutorial" element = {<Tutorial/>}/>
       </Routes>
     </BrowserRouter>
   );

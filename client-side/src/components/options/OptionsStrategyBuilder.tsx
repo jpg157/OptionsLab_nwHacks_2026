@@ -30,8 +30,16 @@ export function OptionsStrategyBuilder() {
   const analysis = useMemo(() => analyzeStrategy(legs), [legs]);
 
   const handleSaveStrategy = async (name: string) => {
+
+    // validate name and symbol
+    if (!strategyName || !stockSymbol) {
+      alert("Please enter both a strategy name and a stock symbol");
+      return;
+    }
+
     setIsSaving(true);
     try {
+
       await saveStrategy(name, legs, stockSymbol);
       setStrategyName(name);
       toast({

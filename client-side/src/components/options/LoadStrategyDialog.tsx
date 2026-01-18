@@ -106,8 +106,7 @@ export function LoadStrategyDialog({ onLoad }: LoadStrategyDialogProps) {
                   <div className="flex-1 min-w-0">
                     <p className="font-medium truncate">{strategy.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      {strategy.legs.length} leg{strategy.legs.length !== 1 ? "s" : ""} •{" "}
-                      {new Date(strategy.updatedAt).toLocaleDateString()}
+                      {strategy.legs.length} leg{strategy.legs.length !== 1 ? "s" : ""}
                     </p>
                   </div>
                   <Button

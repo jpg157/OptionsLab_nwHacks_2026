@@ -1,5 +1,5 @@
 import type { User } from "@/types/User";
-import apiClient from "./apiClient";
+import apiClient, { resOk } from "./apiClient";
 
 export const loginWithGoogle = async () => {
   // use window.location.href for OAuth redirects. 
@@ -13,7 +13,7 @@ export const logout = async () => {
 
 export const getCurrentUser = async (): Promise<User | null> => {
   const res = await apiClient.get("/me");
-  if (res.status !== 200) {
+  if (resOk(res.status)) {
     return null;
   }
   const user: User = res.data;

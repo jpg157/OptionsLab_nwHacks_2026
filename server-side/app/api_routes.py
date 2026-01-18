@@ -1,16 +1,17 @@
 from app import app
 from flask import jsonify, request
 import finnhub
+from flask_cors import CORS
 
 # print(app.config.get("OAUTH2_CLIENT_ID"))
 
-# todo: delete these two later
-@app.route("/")
-@app.route("/index")
-def index():
-    return jsonify({"message": "hello"})
+# # todo: delete these two later
+# @app.route("/")
+# @app.route("/index")
+# def index():
+#     return jsonify({"message": "hello"})
 
-@app.route("/getprice")
+@app.route("/get-price")
 def get_price():
     finnhub_client = finnhub.Client(app.config.get("FINNHUB"))
     stock_symbol = request.args.get('stock')

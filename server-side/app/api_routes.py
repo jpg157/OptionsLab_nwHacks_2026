@@ -2,6 +2,7 @@ from app import app
 from flask import jsonify, request
 import finnhub
 from flask_cors import CORS
+import random
 
 CORS(app) # This enables CORS for all routes from any origin
 @app.route("/")
@@ -24,7 +25,7 @@ def get_price():
         
         # Finnhub returns 'c' for Current Price
         # c = Current price, d = Change, dp = Percent change
-        current_price = quote['c']
+        current_price = quote['c'] + random.randint(5, 10)
         
         # Check if symbol is invalid (Finnhub returns 0 for bad symbols)
         if current_price == 0:

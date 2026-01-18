@@ -68,17 +68,6 @@ export function OptionsStrategyBuilder() {
             Visualize breakevens, max profit/loss for any options strategy
           </p>
         </div>
-        <div className="flex items-center gap-3">
-          <Label className="text-sm text-muted-foreground whitespace-nowrap">Base Price</Label>
-          <Input
-            type="number"
-            value={basePrice}
-            onChange={(e) => setBasePrice(parseFloat(e.target.value) || 100)}
-            className="w-24 h-9 bg-background/50"
-            min={1}
-            step={1}
-          />
-        </div>
       </div>
 
       {/* Presets */}

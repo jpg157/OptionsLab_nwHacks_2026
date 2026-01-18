@@ -1,128 +1,67 @@
-import { useState, useEffect } from "react";
-import { FolderOpen, Trash2 } from "lucide-react";
+import { useState } from "react";
+import { Save } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { loadStrategies, deleteStrategy, type SavedStrategy } from "@/lib/strategyStorage";
-import { toast } from "@/hooks/use-toast";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
-interface LoadStrategyDialogProps {
-  onLoad: (strategy: SavedStrategy) => void;
+interface SaveStrategyDialogProps {
+  currentName: string;
+  onSave: (name: string) => Promise<void>;
+  isSaving: boolean;
 }
 
-export function LoadStrategyDialog({ onLoad }: LoadStrategyDialogProps) {
+// FIX: Named export to match 'import { SaveStrategyDialog }'
+export function SaveStrategyDialog({ currentName, onSave, isSaving }: SaveStrategyDialogProps) {
   const [open, setOpen] = useState(false);
-  const [strategies, setStrategies] = useState<SavedStrategy[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState(currentName);
 
-  const fetchStrategies = async () => {
-    setIsLoading(true);
-    try {
-      const loaded = await loadStrategies();
-      setStrategies(loaded);
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to load strategies",
-        variant: "destructive",
-      });
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (open) {
-      fetchStrategies();
-    }
-  }, [open]);
-
-  const handleLoad = (strategy: SavedStrategy) => {
-    onLoad(strategy);
+  const handleSave = async () => {
+    await onSave(name);
     setOpen(false);
-    toast({
-      title: "Strategy Loaded",
-      description: `"${strategy.name}" has been loaded`,
-    });
-  };
-
-  const handleDelete = async (e: React.MouseEvent, id: string) => {
-    e.stopPropagation();
-    try {
-      await deleteStrategy(id);
-      setStrategies((prev) => prev.filter((s) => s.id !== id));
-      toast({
-        title: "Strategy Deleted",
-        description: "The strategy has been removed",
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to delete strategy",
-        variant: "destructive",
-      });
-    }
   };
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" className="gap-2">
-          <FolderOpen className="h-4 w-4" />
-          Load Strategy
+          <Save className="h-4 w-4" />
+          Save Strategy
         </Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[500px]">
+      <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
-          <DialogTitle>Load Strategy</DialogTitle>
+          <DialogTitle>Save Strategy</DialogTitle>
           <DialogDescription>
-            Select a saved strategy to load.
+            Give your strategy a name to save it for later.
           </DialogDescription>
         </DialogHeader>
-        <ScrollArea className="h-[300px] pr-4">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-8 text-muted-foreground">
-              Loading...
-            </div>
-          ) : strategies.length === 0 ? (
-            <div className="flex items-center justify-center py-8 text-muted-foreground">
-              No saved strategies yet
-            </div>
-          ) : (
-            <div className="space-y-2">
-              {strategies.map((strategy) => (
-                <div
-                  key={strategy.id}
-                  className="flex items-center justify-between p-3 rounded-lg border bg-card hover:bg-accent/50 cursor-pointer transition-colors"
-                  onClick={() => handleLoad(strategy)}
-                >
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{strategy.name}</p>
-                    <p className="text-sm text-muted-foreground">
-                      {strategy.legs.length} leg{strategy.legs.length !== 1 ? "s" : ""} •{" "}
-                      {new Date(strategy.updatedAt).toLocaleDateString()}
-                    </p>
-                  </div>
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8 text-muted-foreground hover:text-destructive"
-                    onClick={(e) => handleDelete(e, strategy.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              ))}
-            </div>
-          )}
-        </ScrollArea>
+        <div className="grid gap-4 py-4">
+          <div className="grid grid-cols-4 items-center gap-4">
+            <Label htmlFor="name" className="text-right">
+              Name
+            </Label>
+            <Input
+              id="name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="col-span-3"
+            />
+          </div>
+        </div>
+        <DialogFooter>
+          <Button onClick={handleSave} disabled={isSaving}>
+            {isSaving ? "Saving..." : "Save Strategy"}
+          </Button>
+        </DialogFooter>
       </DialogContent>
     </Dialog>
   );

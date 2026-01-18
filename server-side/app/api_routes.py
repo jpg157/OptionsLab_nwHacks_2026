@@ -12,8 +12,9 @@ from flask_cors import CORS
 # def index():
 #     return jsonify({"message": "hello"})
 
-@app.route("/get-price")
+@app.route("/api/get-price", methods=["GET"])
 def get_price():
+    print("in get price endpoint")
     finnhub_client = finnhub.Client(app.config.get("FINNHUB"))
     stock_symbol = request.args.get('stock')
     if not stock_symbol:

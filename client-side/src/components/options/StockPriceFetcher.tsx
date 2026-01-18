@@ -3,6 +3,7 @@ import { Search, TrendingUp, Play, Activity } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';
+import apiClient, { resOk } from '@/lib/apiClient';
 
 const API_BASE_URL = 'http://localhost:5000';
 
@@ -32,12 +33,13 @@ export function StockPriceFetcher({ onPriceChange, currentPrice, currentSymbol }
     if (!isAutoRefresh) setIsLoading(true);
     
     try {
-      const response = await fetch(`${API_BASE_URL}/getprice?stock=${stockSymbol.toUpperCase()}`);
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || 'Failed to fetch price');
+      const response = await apiClient.get(`/get-price?stock=${stockSymbol.toUpperCase()}`);
+      
+      if (!resOk(response.status)) {
+        throw new Error(response.statusText || 'Failed to fetch price');
       }
+      
+      const data = await response.data;
 
       const stockData = data as StockData;
       onPriceChange(stockData.price, stockData.symbol);

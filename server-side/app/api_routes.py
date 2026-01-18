@@ -1,8 +1,9 @@
 from app import app
 from flask import jsonify, request
 import finnhub
+from flask_cors import CORS
 
-
+CORS(app) # This enables CORS for all routes from any origin
 @app.route("/")
 @app.route("/index")
 def index():

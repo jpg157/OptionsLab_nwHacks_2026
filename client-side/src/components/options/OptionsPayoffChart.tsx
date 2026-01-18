@@ -36,7 +36,7 @@ export function OptionsPayoffChart({ analysis, strategyName, strategyIntroductio
     );
   }
 
-  const minPayAdd a tutorial page, sharing same quick strategies and off = Math.min(...payoffData.map(p => p.payoff));
+  const minPayoff = Math.min(...payoffData.map(p => p.payoff));
   const maxPayoff = Math.max(...payoffData.map(p => p.payoff));
   const padding = Math.max(Math.abs(minPayoff), Math.abs(maxPayoff)) * 0.1;
 

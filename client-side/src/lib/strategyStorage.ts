@@ -15,14 +15,6 @@ export interface SavedStrategy {
 // ===========================================
 
 export async function saveStrategy(name: string, legs: OptionLeg[], stockSymbol: string): Promise<SavedStrategy> {
-  // const strategy: SavedStrategy = {
-  //   name,
-  //   legs,
-  //   createdAt: new Date().toISOString(),
-  //   updatedAt: new Date().toISOString(),
-  // };
-  
-    // TODO: Replace with your Flask API call
 
     const response = await apiClient.post(
       "/strategies",
@@ -43,19 +35,6 @@ export async function saveStrategy(name: string, legs: OptionLeg[], stockSymbol:
     console.log(JSON.stringify(savedStrategy));
 
     return savedStrategy;
-
-    // const response = await fetch(`${API_BASE_URL}/strategies`, {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify({ name, legs }),
-    // });
-    // return response.json();
-
-  // // Fallback: localStorage for development
-  // const strategies = getStrategiesFromStorage();
-  // strategies.push(strategy);
-  // localStorage.setItem("savedStrategies", JSON.stringify(strategies));
-  // return strategy;
 }
 
 export async function createPriceAlert(stockSymbol: string, targetPrice: number): Promise<void> {
@@ -76,9 +55,6 @@ export async function createPriceAlert(stockSymbol: string, targetPrice: number)
 }
 
 export async function loadStrategies(): Promise<SavedStrategy[]> {
-  // TODO: Replace with your Flask API call
-  // const response = await fetch(`${API_BASE_URL}/strategies`);
-  // return response.json();
 
   const response = await apiClient.get("/strategies");
 
@@ -94,9 +70,6 @@ export async function loadStrategies(): Promise<SavedStrategy[]> {
 }
 
 export async function deleteStrategy(id: string): Promise<void> {
-  // TODO: Replace with your Flask API call
-  // await fetch(`${API_BASE_URL}/strategies/${id}`, { method: "DELETE" });
-  // return;
 
     const response = await apiClient.delete(
       `/strategies/${id}`
@@ -108,14 +81,6 @@ export async function deleteStrategy(id: string): Promise<void> {
 }
 
 // export async function updateStrategy(id: string, name: string, legs: OptionLeg[]): Promise<SavedStrategy> {
-//   // TODO: Replace with your Flask API call
-//   // const response = await fetch(`${API_BASE_URL}/strategies/${id}`, {
-//   //   method: "PUT",
-//   //   headers: { "Content-Type": "application/json" },
-//   //   body: JSON.stringify({ name, legs }),
-//   // });
-//   // return response.json();
-
 
 //   // Fallback: localStorage for development
 //   const strategies = getStrategiesFromStorage();

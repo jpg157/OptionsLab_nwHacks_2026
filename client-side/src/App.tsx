@@ -1,56 +1,14 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import { useEffect } from "react";
-import { socket } from './socket';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Index from "./pages/Index";
+// import Header from "./components/Header"; // 如果有
 
-function App() {
-  const [count, setCount] = useState(0)
-
-  //TODO: move this to a dedicated socket hook for handling socket connections
-  useEffect(() => {
-    socket.connect();
-
-    socket.on("connect", () => {
-      console.log("Connected to server:", socket.id);
-    });
-
-    socket.on("disconnect", () => {
-      console.log("Disconnected");
-    });
-
-    return () => {
-      socket.off("connect");
-      socket.off("disconnect");
-      socket.disconnect();
-    };
-  }, []);
-
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <BrowserRouter>
+      {/* <Header /> */}
+      <Routes>
+        <Route path="/" element={<Index />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
-export default App

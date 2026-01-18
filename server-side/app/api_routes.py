@@ -1,20 +1,21 @@
 import random
 
 from app.auth_routes import login_required
-from app import app
-from flask import jsonify, request
+from app import app, db
+import sqlalchemy as sa
+import sqlalchemy.orm as orm
+from flask import jsonify, request, session
 import finnhub
 import uuid
+from app.model import User, Strategy, OptionLeg
 
 # print(app.config.get("OAUTH2_CLIENT_ID"))
 
-# # todo: delete these two later
+# # TODO: delete these two later
 # @app.route("/")
 # @app.route("/index")
 # def index():
 #     return jsonify({"message": "hello"})
-
-in_memory_strategy_db: list = []
 
 @app.route("/api/get-price", methods=["GET"])
 def get_price():
@@ -68,18 +69,42 @@ def saveStrategy():
     legs = save_strategy_input_data["legs"]
     stockSymbol = save_strategy_input_data.get("stockSymbol", "")
 
-    strategy: dict = {
-        #TODO: make db create id not server
-        "id": uuid.uuid4(),
+    # strategy: dict = {
+    #     "id": uuid.uuid4(),
+    #
+    #     "name": name,
+    #     "legs": legs,
+    #     "stockSymbol": stockSymbol
+    # }
 
-        "name": name,
-        "legs": legs,
-        "stockSymbol": stockSymbol
-    }
+    lol = [] # list of legs
+    for leg_dict in legs:
+        leg = OptionLeg()
+        leg.option_type = leg_dict["type"]
+        leg.position_type = leg_dict["position"]
+        leg.strike = leg_dict["strike"]
+        leg.premium = leg_dict["premium"]
+        leg.quantity = leg_dict["quantity"]
+        
+        lol.append(leg)
 
-    in_memory_strategy_db.append(strategy) #todo: replace this with db query
+    strategy = Strategy()
+    strategy.name = name
+    strategy.stock_symbol = stockSymbol
+    strategy.option_legs = lol
 
-    print(in_memory_strategy_db)
+    user = db.session.scalars(sa.select(User).where(User.email == session.get("user_token")["userinfo"]["email"])).first()
+
+    if not user.strategies:
+        user.strategies = []
+
+    user.strategies.append(strategy)
+    db.session.commit()
+    db.session.flush()
+
+    # in_memory_strategy_db.append(strategy)
+
+    # print(in_memory_strategy_db)
 
     return strategy
 
@@ -89,11 +114,32 @@ def loadAllStrategies():
 
     savedStrategies: list[dict] = []
 
-    savedStrategies = in_memory_strategy_db #todo: replace this with db query
+    # savedStrategies = in_memory_strategy_db
+
+    user = db.session.scalars(sa.select(User).where(User.email == session.get("user_token")["userinfo"]["email"])).first()
+
+    for strategy in user.strategies:
+        option_legs = []
+        for option_leg in strategy.option_legs:
+            option_legs.append({
+                "type": option_leg.option_type,
+                "position": option_leg.position_type,
+                "strike": option_leg.strike,
+                "premium": option_leg.premium,
+                "quantity": option_leg.quantity,
+            })
+
+        savedStrategies.append({
+            "id": strategy.id,
+            "name": strategy.name,
+            "legs": option_legs,
+            "stockSymbol": strategy.stock_symbol,
+        })
+
 
     print(savedStrategies)
 
-    return savedStrategies
+    return jsonify(savedStrategies)
 
 @app.route("/api/strategies/<strategy_id>", methods=["DELETE"])
 @login_required
@@ -101,10 +147,19 @@ def deleteStrategies(strategy_id: int):
     global in_memory_strategy_db
 
     # Filter out the strategy with the matching ID (comparing as strings)
-    in_memory_strategy_db = [
-        strategy for strategy in in_memory_strategy_db 
-        if str(strategy.get("id")) != strategy_id
-    ] #todo: replace this with db query
+    # in_memory_strategy_db = [
+    #     strategy for strategy in in_memory_strategy_db 
+    #     if str(strategy.get("id")) != strategy_id
+    # ]
+
+    deleted_strategy = db.session.scalar(sa.select(Strategy).where(Strategy.id == strategy_id))
+
+    if not deleted_strategy:
+        return
+
+    db.session.delete(deleted_strategy)
+    db.session.flush()
+    db.session.commit()
 
     print(in_memory_strategy_db)
 

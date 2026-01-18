@@ -8,17 +8,17 @@ class User(db.Model):
     username: Mapped[str] = mapped_column(index=True)
     email: Mapped[str] = mapped_column(index=True, unique=True)
 
-    strategies: Mapped[list["Strategy"]] = relationship(back_populates="user")
+    strategies: Mapped[list["Strategy"]] = relationship(back_populates="user", cascade="all, delete-orphan")
 
 class Strategy(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
-    given_id: Mapped[str] = mapped_column()
     name: Mapped[str] = mapped_column()
+    stock_symbol: Mapped[str | None] = mapped_column()
 
     user_id: Mapped[int] = mapped_column(ForeignKey("user.id"))
     user: Mapped["User"] = relationship(back_populates="strategies")
 
-    option_legs: Mapped[list["OptionLeg"]] = relationship(back_populates="strategiess")
+    option_legs: Mapped[list["OptionLeg"]] = relationship(back_populates="strategy", cascade="all, delete-orphan")
 
 class OptionLeg(db.Model):
     id: Mapped[int] = mapped_column(primary_key=True)
@@ -29,4 +29,4 @@ class OptionLeg(db.Model):
     quantity: Mapped[int] = mapped_column()
 
     strategy_id: Mapped[int] = mapped_column(ForeignKey("strategy.id"))
-    strategiess: Mapped["Strategy"] = relationship(back_populates="option_legs")
+    strategy: Mapped["Strategy"] = relationship(back_populates="option_legs")

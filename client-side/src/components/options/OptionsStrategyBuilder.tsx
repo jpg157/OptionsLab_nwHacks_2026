@@ -1,8 +1,6 @@
 import { useState, useMemo } from 'react';
 import { Plus } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 import { OptionLegForm } from './OptionLegForm';
 import { OptionsPayoffChart } from './OptionsPayoffChart';
 import { StrategyMetrics } from './StrategyMetrics';
@@ -20,7 +18,7 @@ const defaultLeg: OptionLeg = {
 export function OptionsStrategyBuilder() {
   const [legs, setLegs] = useState<OptionLeg[]>([defaultLeg]);
   const [strategyName, setStrategyName] = useState('Custom Strategy');
-  const [basePrice, setBasePrice] = useState(100);
+  const [basePrice] = useState(100);
 
   const analysis = useMemo(() => analyzeStrategy(legs), [legs]);
 

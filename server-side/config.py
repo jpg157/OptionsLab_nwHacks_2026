@@ -2,6 +2,10 @@ import os
 from dotenv import load_dotenv
 basedir = os.path.abspath(os.path.dirname(__file__))
 
+def is_prod():
+  print(f"app environment: {os.environ.get("APP_ENV")}")
+  return os.environ.get("APP_ENV") == "production"
+
 load_dotenv()
 class Config:
   OAUTH2_CLIENT_ID = os.environ.get("OAUTH2_CLIENT_ID") or ""
@@ -18,9 +22,9 @@ class Config:
   
   # Session Configuration
   SESSION_TYPE = "filesystem"
-  SESSION_COOKIE_SECURE = False
+  SESSION_COOKIE_SECURE =  True if is_prod() else False
+  SESSION_COOKIE_SAMESITE = 'None' if is_prod() else 'Lax'
   SESSION_COOKIE_HTTPONLY = True
-  SESSION_COOKIE_SAMESITE = 'Lax'
   
   # SECRET_KEY = os.environ.get("SECRET_KEY") or ""
   SQLALCHEMY_DATABASE_URI = os.environ.get('DATABASE_URL') or 'sqlite:///' + os.path.join(basedir, 'app.db')

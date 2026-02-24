@@ -1,5 +1,5 @@
 import { BookOpen, Target, TrendingUp, Shield, AlertTriangle, AlertOctagon } from 'lucide-react';
-import { strategyExplanations, type StrategyExplanation as StrategyExplanationType, type RiskLevel } from '../../lib/strategyExplanations';
+import { strategyExplanations, type RiskLevel } from '../../lib/strategyExplanations';
 
 interface StrategyExplanationProps {
   strategyName: string;

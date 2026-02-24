@@ -19,8 +19,6 @@
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
 
-    /* THIS IS THE MISSING PART THAT FIXES THE ERROR */
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     }

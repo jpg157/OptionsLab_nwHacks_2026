@@ -45,6 +45,12 @@ pip install -r requirements.txt
 python3 server-side.py
 ```
 
+or
+
+```sh
+python server-side.py
+```
+
 ## Ensure that you have the updated db schema
 
 ```

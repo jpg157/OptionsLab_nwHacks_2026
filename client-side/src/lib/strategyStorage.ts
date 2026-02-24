@@ -10,10 +10,6 @@ export interface SavedStrategy {
   // updatedAt: string;
 }
 
-// ===========================================
-// API Functions - Connect to your Flask backend
-// ===========================================
-
 export async function saveStrategy(name: string, legs: OptionLeg[], stockSymbol: string): Promise<SavedStrategy> {
 
     const response = await apiClient.post(

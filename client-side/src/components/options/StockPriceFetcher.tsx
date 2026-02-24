@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { Search, TrendingUp, Play, Activity, BellRing } from 'lucide-react';
+import { TrendingUp, Play, Activity, BellRing } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { toast } from '@/hooks/use-toast';

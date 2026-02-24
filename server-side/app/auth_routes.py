@@ -35,11 +35,11 @@ def googleCallback():
   # test to print the session tokens and data
   print(json.dumps(session.get("user_token"), indent=4))
 
-  found_user = db.session.scalars(sa.select(User).where(User.email == session.get("user_token")["userinfo"]["email"])).first()
+  found_user = db.session.scalars(sa.select(User).where(User.email == session.get("user_token")["userinfo"]["email"])).first() # type: ignore
 
   if not found_user:
     print("Creating User")
-    new_user = User(username=session["user_token"]["userinfo"]["name"], email=session["user_token"]["userinfo"]["email"])
+    new_user = User(username=session["user_token"]["userinfo"]["name"], email=session["user_token"]["userinfo"]["email"]) # type: ignore
     db.session.add(new_user)
     db.session.flush()
     db.session.commit()
@@ -65,7 +65,7 @@ def logout():
 @app.route("/api/me", methods=["GET"])
 @login_required
 def getCurrentUserInfo():
-  user_info = session.get("user_token")["userinfo"]
+  user_info = session.get("user_token")["userinfo"] # type: ignore
 
   user: dict[str, str] = {
     "name": f"{user_info['given_name']} {user_info['family_name']}",

@@ -133,9 +133,9 @@ def loadAllStrategies():
 
     # savedStrategies = in_memory_strategy_db
 
-    user = db.session.scalars(sa.select(User).where(User.email == session.get("user_token")["userinfo"]["email"])).first()
+    user = db.session.scalars(sa.select(User).where(User.email == session.get("user_token")["userinfo"]["email"])).first() # type: ignore
 
-    for strategy in user.strategies:
+    for strategy in user.strategies: # type: ignore
         option_legs = []
         for option_leg in strategy.option_legs:
             option_legs.append({
@@ -158,7 +158,7 @@ def loadAllStrategies():
 
     return jsonify(savedStrategies)
 
-@app.route("/api/strategies/<int:strategy_id>", methods=["DELETE"])
+@app.route("/api/strategies/<int:strategy_id>", methods=["DELETE"]) # type: ignore
 @login_required
 def deleteStrategies(strategy_id: int):
     # global in_memory_strategy_db

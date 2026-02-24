@@ -17,7 +17,7 @@ export default function App() {
         <Route index element={<Index />}/>
         
         {/* Navbar shown in Layout component for all the child routes of / */}
-        <Route path="/" element={<Layout/>}>
+        <Route element={<Layout/>}>
           <Route path="/options" element={<OptionsStrategy />} />
           <Route path="/tutorial" element = {<Tutorial/>}/>
           {/* <Route path="/login" element = {<Login/>}/> */}

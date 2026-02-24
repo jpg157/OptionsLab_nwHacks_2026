@@ -12,6 +12,7 @@ import {
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { loadStrategies, deleteStrategy, type SavedStrategy } from "@/lib/strategyStorage";
 import { toast } from "@/hooks/use-toast";
+import { isLoggedIn } from "@/lib/auth";
 
 interface LoadStrategyDialogProps {
   onLoad: (strategy: SavedStrategy) => void;
@@ -44,6 +45,14 @@ export function LoadStrategyDialog({ onLoad }: LoadStrategyDialogProps) {
     }
   }, [open]);
 
+  const handleOpen = async () => {
+    if (!(await isLoggedIn())) {
+      alert("Please log in to load strategies")
+      return;
+    }
+    setOpen(true)
+  }
+
   const handleLoad = (strategy: SavedStrategy) => {
     onLoad(strategy);
     setOpen(false);
@@ -73,12 +82,14 @@ export function LoadStrategyDialog({ onLoad }: LoadStrategyDialogProps) {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
+      {/* <DialogTrigger asChild> */}
+        <Button variant="outline" size="sm" className="gap-2"
+          onClick={handleOpen}
+        >
           <FolderOpen className="h-4 w-4" />
           Load Strategy
         </Button>
-      </DialogTrigger>
+      {/* </DialogTrigger> */}
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Load Strategy</DialogTitle>

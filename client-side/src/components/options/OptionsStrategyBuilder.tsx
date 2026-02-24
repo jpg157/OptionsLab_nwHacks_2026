@@ -39,7 +39,6 @@ export function OptionsStrategyBuilder() {
 
     setIsSaving(true);
     try {
-
       await saveStrategy(name, legs, stockSymbol);
       setStrategyName(name);
       toast({

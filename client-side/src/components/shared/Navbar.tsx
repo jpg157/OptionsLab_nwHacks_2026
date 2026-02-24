@@ -1,7 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { TrendingUp, BookOpen } from 'lucide-react';
 
-export function Header() {
+export function Navbar() {
   const location = useLocation();
 
   const navItems = [
@@ -10,7 +10,7 @@ export function Header() {
   ];
 
   return (
-    <header className="glass-card mb-6">
+    <header className="mx-10 glass-card mb-2">
       <div className="flex items-center justify-between px-6 py-4">
         <div className="flex items-center gap-2">
           <div className="p-2 rounded-lg bg-primary/10">

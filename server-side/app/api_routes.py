@@ -95,12 +95,12 @@ def saveStrategy():
     strategy.stock_symbol = stockSymbol
     strategy.option_legs = lol
 
-    user = db.session.scalars(sa.select(User).where(User.email == session.get("user_token")["userinfo"]["email"])).first()
+    user = db.session.scalars(sa.select(User).where(User.email == session.get("user_token")["userinfo"]["email"])).first() # type: ignore
 
-    if not user.strategies:
-        user.strategies = []
+    if not user.strategies: # type: ignore
+        user.strategies = [] # type: ignore
 
-    user.strategies.append(strategy)
+    user.strategies.append(strategy) # type: ignore
     db.session.flush()
     db.session.commit()
 

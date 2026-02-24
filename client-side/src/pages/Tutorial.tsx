@@ -1,5 +1,4 @@
 import { useState, useMemo } from 'react';
-import { Header } from '@/components/Header';
 import { TutorialStrategyPresets } from '@/components/tutorial/TutorialStrategyPresets';
 import { StrategyExplanation } from '@/components/tutorial/StrategyExplanation';
 import { OptionsTerminology } from '@/components/tutorial/OptionsTerminology';
@@ -24,9 +23,7 @@ const Tutorial = () => {
 
   return (
     <div className="min-h-screen bg-background p-6 md:p-10">
-      <div className="max-w-7xl mx-auto">
-        <Header />
-        
+      <div className="max-w-7xl mx-auto">        
         <div className="glass-card p-6 mb-6">
           <div className="flex items-center gap-3 mb-2">
             <div className="p-2 rounded-lg bg-primary/10">

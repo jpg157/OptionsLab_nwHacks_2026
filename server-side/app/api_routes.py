@@ -154,7 +154,7 @@ def loadAllStrategies():
         })
 
 
-    print(savedStrategies)
+    # print(savedStrategies)
 
     return jsonify(savedStrategies)
 

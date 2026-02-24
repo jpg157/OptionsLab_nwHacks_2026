@@ -107,21 +107,24 @@ export function OptionsStrategyBuilder() {
   return (
     <div className="space-y-6 animate-fade-in">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h2 className="text-2xl font-bold gradient-text">Options Strategy Builder</h2>
-          <p className="text-muted-foreground text-sm">
-            Visualize breakevens, max profit/loss for any options strategy
-          </p>
+      <div className="flex flex-col gap-4 items-start">
+        <div className="flex flex-row w-full justify-between">
+          <h2 className="text-2xl font-bold flex items-start">Options Strategy Builder</h2>
+
+          <div className="flex gap-2">
+            <SaveStrategyDialog
+              currentName={strategyName}
+              onSave={handleSaveStrategy}
+              isSaving={isSaving}
+            />
+            <LoadStrategyDialog onLoad={handleLoadStrategy} />
+          </div>
         </div>
-        <div className="flex gap-2">
-          <SaveStrategyDialog
-            currentName={strategyName}
-            onSave={handleSaveStrategy}
-            isSaving={isSaving}
-          />
-          <LoadStrategyDialog onLoad={handleLoadStrategy} />
-        </div>
+
+        <p className="text-muted-foreground text-sm">
+          Visualize breakevens, max profit/loss for any options strategy
+        </p>
+        
       </div>
 
       {/* Stock Price Fetcher */}

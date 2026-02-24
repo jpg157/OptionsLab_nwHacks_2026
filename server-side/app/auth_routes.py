@@ -1,7 +1,9 @@
 from app import app, oauth, db
 from app.model import User
-from flask import json, session, redirect, jsonify
+from flask import session, redirect, jsonify
 import sqlalchemy as sa
+
+client_base_url: str = str(app.config.get("CLIENT_BASE_URL"))
 
 # === Check Authenticated Decorator Function ===
 
@@ -46,7 +48,7 @@ def googleCallback():
 
   # create response function obj equal to redirect fn - redirect the user to the client side root page for now
   #todo: allow for different redirect routes
-  return redirect("http://localhost:8080/options")
+  return redirect(f"{client_base_url}/options")
 
 
 @app.route("/api/logout", methods=["POST"])
@@ -56,7 +58,7 @@ def logout():
 
   # redirect the user to the client side root page for now
   #todo: allow for different redirect routes
-  response = redirect("http://localhost:8080")
+  response = redirect(client_base_url)
 
   # delete the cookie stored on the client side
   response.delete_cookie('session')

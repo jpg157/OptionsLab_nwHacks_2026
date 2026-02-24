@@ -19,12 +19,11 @@ class Base(DeclarativeBase): pass
 db = SQLAlchemy(model_class=Base, app=app)
 migrate = Migrate(app, db)
 
+client_base_url: str = str(app.config.get("CLIENT_BASE_URL"))
+
 # Cors
 CORS(app, origins=[
-  # "https://myapp.com", 
-  "http://localhost:8080",
-  "http://localhost:5173",
-  "http://localhost:5000"
+  client_base_url
 ], supports_credentials=True)
 
 # OAuth

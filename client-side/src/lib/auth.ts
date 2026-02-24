@@ -4,7 +4,7 @@ import apiClient, { resOk } from "./apiClient";
 export const loginWithGoogle = async () => {
   // use window.location.href for OAuth redirects. 
   // axios or AJAX requests cannot handle the redirect to Google's domain properly due to CORS security policies on Google's side.
-  window.location.href = "/api/google-login";
+  window.location.href = `${import.meta.env.VITE_SERVER_BASE_URL}/api/google-login`;
 }
 
 export const logout = async () => {

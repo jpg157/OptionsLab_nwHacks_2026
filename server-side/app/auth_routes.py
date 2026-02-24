@@ -33,7 +33,7 @@ def googleCallback():
   session["user_token"] = token
   
   # test to print the session tokens and data
-  print(json.dumps(session.get("user_token"), indent=4))
+  # print(json.dumps(session.get("user_token"), indent=4))
 
   found_user = db.session.scalars(sa.select(User).where(User.email == session.get("user_token")["userinfo"]["email"])).first() # type: ignore
 

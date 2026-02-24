@@ -48,7 +48,7 @@ export function StockPriceFetcher({ onPriceChange, currentPrice, currentSymbol }
       
       const data = await response.data;
       const stockData = data as StockData;
-      console.log(stockData.symbol);
+      // console.log(stockData.symbol);
       
       onPriceChange(stockData.price, stockData.symbol);
       setSymbol(stockData.symbol);
@@ -60,7 +60,7 @@ export function StockPriceFetcher({ onPriceChange, currentPrice, currentSymbol }
         });
       }
     } catch (error) {
-        console.log("invalid symbol or failed to fetch the price")
+        // console.log("invalid symbol or failed to fetch the price")
         setInputError(true);
 
 

@@ -28,7 +28,7 @@ export async function saveStrategy(name: string, legs: OptionLeg[], stockSymbol:
 
     const savedStrategy: SavedStrategy = response.data;
 
-    console.log(JSON.stringify(savedStrategy));
+    // console.log(JSON.stringify(savedStrategy));
 
     return savedStrategy;
 }
@@ -60,7 +60,7 @@ export async function loadStrategies(): Promise<SavedStrategy[]> {
 
   const savedStrategies: SavedStrategy[] = response.data;
 
-  console.log(JSON.stringify(savedStrategies));
+  // console.log(JSON.stringify(savedStrategies));
 
   return savedStrategies;
 }

@@ -8,10 +8,10 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { isLoggedIn } from "@/lib/auth";
 
 interface SaveStrategyDialogProps {
   currentName: string;
@@ -24,6 +24,14 @@ export function SaveStrategyDialog({ currentName, onSave, isSaving }: SaveStrate
   const [open, setOpen] = useState(false);
   const [name, setName] = useState(currentName);
 
+  const handleOpen = async () => {
+    if (!(await isLoggedIn())) {
+      alert("Please log in to save strategies")
+      return;
+    }
+    setOpen(true)
+  }
+
   const handleSave = async () => {
     await onSave(name);
     setOpen(false);
@@ -31,12 +39,17 @@ export function SaveStrategyDialog({ currentName, onSave, isSaving }: SaveStrate
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger asChild>
-        <Button variant="outline" size="sm" className="gap-2">
-          <Save className="h-4 w-4" />
-          Save Strategy
-        </Button>
-      </DialogTrigger>
+      {/* <DialogTrigger asChild> */}
+      <Button 
+        onClick={handleOpen}
+        variant="outline" 
+        size="sm" 
+        className="gap-2"
+      >
+        <Save className="h-4 w-4" />
+        Save Strategy
+      </Button>
+      {/* </DialogTrigger> */}
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Save Strategy</DialogTitle>

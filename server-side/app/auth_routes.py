@@ -1,6 +1,6 @@
 from app import app, oauth, db
 from app.model import User
-from flask import session, redirect, jsonify
+from flask import make_response, session, redirect, jsonify
 import sqlalchemy as sa
 
 client_base_url: str = str(app.config.get("CLIENT_BASE_URL"))
@@ -56,9 +56,9 @@ def googleCallback():
 def logout():
   session.clear()
 
-  # redirect the user to the client side root page for now
-  #todo: allow for different redirect routes
-  response = redirect(client_base_url)
+  response = make_response({
+    "message": "Successfully logged out"
+  })
 
   # delete the cookie stored on the client side
   response.delete_cookie('session')
@@ -68,7 +68,7 @@ def logout():
 @login_required
 def getCurrentUserInfo():
   user_info = session.get("user_token")["userinfo"] # type: ignore
-
+  
   user: dict[str, str] = {
     "name": f"{user_info['given_name']} {user_info['family_name']}",
     "email": f"{user_info['email']}"

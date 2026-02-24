@@ -9,13 +9,24 @@ export const loginWithGoogle = async () => {
 
 export const logout = async () => {
   await apiClient.post("/logout");
+  // redirect the user to options page
+  window.location.href = "/options";
 }
 
 export const getCurrentUser = async (): Promise<User | null> => {
-  const res = await apiClient.get("/me");
-  if (resOk(res.status)) {
+  try {
+    const res = await apiClient.get("/me");
+    if (!resOk(res.status)) {
+      return null;
+    }
+      const user: User = res.data;
+    return user;
+  } catch (error) {
     return null;
   }
-  const user: User = res.data;
-  return user;
+}
+
+export const isLoggedIn = async (): Promise<boolean> => {
+  const user: User | null = await getCurrentUser()
+  return user !== null;
 }
